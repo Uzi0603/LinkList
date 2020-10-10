@@ -38,13 +38,13 @@ class chain
 		//方法
 		void insert(int theIndex, const T& theElement);//插入
 		int erase(const T& theElement);//删除(不存在返回-1)
-		//void reverse(chain<T>& list);//倒置
 		void reverse();
 		int indexOf(const T& theElement) const;//查询索引
 		long calculate_xor();//计算异或和
 		void combine(chain<T>& a, chain<T>& b);//合并
 		//辅助方法
-		void creatList(int size = 5);//有序创建一个链表
+		void creatList(int size = 5);//创建一个链表
+		void creatSortedList(int size = 5);//创建一个有序链表
 		void clear();//清空
 		void push_back(const T& element);
 		void insertFirstNode(const T& theElement);//在原头节点前插入新的头节点
@@ -168,10 +168,21 @@ void bubbleSort(T arr[], int len)
 template<class T>
 void chain<T>::creatList(int n)
 {
+	T element;
+	for (int i = 0; i < n; i++)
+	{
+		cin >> element;
+		(*this).insert(i, element);
+	}
+}
+
+template<class T>
+void chain<T>::creatSortedList(int n)
+{
 	T* element = new T[n];
 	for (int i = 0; i < n; i++)
 		cin >> element[i];
-	//bubbleSort(element, n);
+	bubbleSort(element, n);
 	for (int i = 0; i < n; i++)
 		(*this).insert(i, element[i]);
 	delete []element;
@@ -273,8 +284,10 @@ void chain<T>::reverse()
 template<class T>
 void chain<T>::output()
 {
-	for (chainNode<T>* currentNode = firstNode; currentNode != NULL; currentNode = currentNode->nextNode)
-		cout << currentNode->data << " ";
+	chain<T>::iterator istart = (*this).start();
+	chain<T>::iterator iend = (*this).end();
+	for (; istart != iend; istart++)
+		cout << *istart << ' ';
 }
 
 template<class T>
@@ -355,12 +368,21 @@ int main()
 	//加入异常处理
 	try
 	{
-		int n, q;
-		cin >> n >> q;
-
-		chain<int> element;
-		element.creatList(n);
-
+		int n, m, p, q;
+		chain<int> element, element2,list;
+		cin >> p >> q;//链表个数，操作数
+		if (p == 1)
+		{
+			cin >> n;
+			element.creatList(n);
+		}
+		else if (p == 2)
+		{
+			cin >> n >> m;
+			element.creatSortedList(n);
+			element2.creatSortedList(m);
+		}
+		
 		int result_index = 0;
 		long* result = new long[q];
 		int decision, idx, val, temp;
@@ -394,6 +416,13 @@ int main()
 			case(5):
 				result[result_index] = element.calculate_xor();
 				result_index++;
+			case(6):
+				element.output();
+				break;
+			case(7):
+				list.combine(element, element2);
+				list.output();
+				break;
 			default:
 				break;
 			}
@@ -409,6 +438,7 @@ int main()
 	}
 	return 0;
 }
+
 /*
 int main()
 {
